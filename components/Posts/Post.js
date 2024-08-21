@@ -10,8 +10,46 @@ const PostContainer = styled.div(() => ({
   overflow: 'hidden',
 }));
 
+const Header = styled.div(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: '10px',
+  borderBottom: '1px solid #ccc',
+  backgroundColor: '#f8f9fa',
+}));
+
+const Circle = styled.div(() => ({
+  width: '40px',
+  height: '40px',
+  borderRadius: '50%',
+  backgroundColor: '#6c757d',
+  color: '#fff',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '16px',
+  fontWeight: 'bold',
+  marginRight: '10px',
+}));
+
+const User = styled.div(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+}));
+
+const UserDetailName = styled.div(() => ({
+  color: 'black',
+  fontWeight: '600',
+}));
+const UserDetailEmail = styled.div(() => ({
+  color: '#555',
+  fontStyle: 'italic',
+}));
+
 const CarouselContainer = styled.div(() => ({
   position: 'relative',
+  width: '100%',
+  overflow: 'hidden',
 }));
 
 const Carousel = styled.div(() => ({
@@ -46,7 +84,8 @@ const Content = styled.div(() => ({
 
 const Button = styled.button(() => ({
   position: 'absolute',
-  bottom: 0,
+  top: '50%',
+  transform: 'translateY(-50%)',
   backgroundColor: 'rgba(255, 255, 255, 0.5)',
   border: 'none',
   color: '#000',
@@ -69,7 +108,7 @@ const Post = ({ post }) => {
   const handleNextClick = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({
-        left: 50,
+        left: 300,
         behavior: 'smooth',
       });
     }
@@ -78,14 +117,27 @@ const Post = ({ post }) => {
   const handlePrevClick = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({
-        left: -70,
+        left: -300,
         behavior: 'smooth',
       });
     }
   };
+  function getInitials(fullName) {
+    const nameParts = fullName.split(' ');
+    const firstInitial = nameParts[0][0];
+    const lastInitial = nameParts[1] ? nameParts[1][0] : '';
+    return `${firstInitial}${lastInitial}`.toUpperCase();
+  }
 
   return (
     <PostContainer>
+      <Header>
+        <Circle>{getInitials(post.user.name)}</Circle>
+        <User>
+          <UserDetailName>{post.user.name}</UserDetailName>
+          <UserDetailEmail>{post.user.email}</UserDetailEmail>
+        </User>
+      </Header>
       <CarouselContainer>
         <Carousel ref={carouselRef}>
           {post.images.map((image, index) => (
@@ -107,6 +159,7 @@ const Post = ({ post }) => {
 
 Post.propTypes = {
   post: PropTypes.shape({
+    user: PropTypes.number.isRequired,
     content: PropTypes.any,
     images: PropTypes.shape({
       map: PropTypes.func,
